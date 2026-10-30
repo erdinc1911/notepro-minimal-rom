@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Note Pro 12.2 Minimal ROM: ilk acilis varsayilanlari -->
+<resources>
+    <!-- Pencere animasyonlarini yari surede oynat (2560x1600 ekranda GPU yukunu azaltir) -->
+    <fraction name="def_window_animation_scale">50%</fraction>
+    <fraction name="def_window_transition_scale">50%</fraction>
+    <!-- Ekran 5 dakikada kapansin (ders sirasinda kararmasin) -->
+    <integer name="def_screen_off_timeout">300000</integer>
+</resources>

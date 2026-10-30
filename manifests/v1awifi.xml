@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Note Pro 12.2 (SM-P900 / v1awifi) icin LineageOS 18.1 yerel manifest dosyasi.
+  Derleme sunucusunda .repo/local_manifests/ klasorune kopyalanir.
+  Bagimliliklar exynos5420 cihaz agacindaki lineage.dependencies dosyalarindan alinmistir.
+-->
+<manifest>
+  <!-- Cihaz agaclari (exynos5420 toplulugu) -->
+  <project name="exynos5420/android_device_samsung_v1awifi" path="device/samsung/v1awifi" remote="github" revision="lineage-18.1" />
+  <project name="exynos5420/android_device_samsung_v1a-common" path="device/samsung/v1a-common" remote="github" revision="lineage-18.1" />
+  <project name="exynos5420/android_device_samsung_universal5420-common" path="device/samsung/universal5420-common" remote="github" revision="lineage-18.1" />
+
+  <!-- Kernel (Linux 3.4) -->
+  <project name="exynos5420/android_kernel_samsung_exynos5420" path="kernel/samsung/exynos5420" remote="github" revision="lineage-18.1" />
+
+  <!-- Samsung kapali kaynak dosyalari (Mali, Wi-Fi/BT firmware, ses) -->
+  <project name="exynos5420/android_vendor_samsung_v1awifi" path="vendor/samsung/v1awifi" remote="github" revision="lineage-18.1" />
+  <project name="exynos5420/android_vendor_samsung_v1a-common" path="vendor/samsung/v1a-common" remote="github" revision="lineage-18.1" />
+  <project name="exynos5420/android_vendor_samsung_universal5420-common" path="vendor/samsung/universal5420-common" remote="github" revision="lineage-18.1" />
+
+  <!-- Exynos 5420 donanim kodu -->
+  <project name="exynos5420/android_hardware_samsung_slsi_exynos5420" path="hardware/samsung_slsi/exynos5420" remote="github" revision="lineage-18.1" />
+
+  <!-- LineageOS ortak Samsung / SLSI depolari -->
+  <project name="LineageOS/android_hardware_samsung" path="hardware/samsung" remote="github" revision="lineage-18.1" />
+  <project name="LineageOS/android_hardware_samsung_slsi_exynos" path="hardware/samsung_slsi/exynos" remote="github" revision="lineage-18.1" />
+  <project name="LineageOS/android_hardware_samsung_slsi_exynos5" path="hardware/samsung_slsi/exynos5" remote="github" revision="lineage-18.1" />
+  <project name="LineageOS/android_hardware_samsung_slsi_openmax" path="hardware/samsung_slsi/openmax" remote="github" revision="lineage-18.1" />
+  <project name="LineageOS/android_device_samsung_slsi_sepolicy" path="device/samsung_slsi/sepolicy" remote="github" revision="lineage-18.1" />
+
+  <!-- Bizim sadelestirme katmanimiz -->
+  <project name="erdinc1911/notepro-minimal-rom" path="vendor/minimal" remote="github" revision="main" />
+</manifest>
