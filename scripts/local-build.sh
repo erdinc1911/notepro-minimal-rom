@@ -2,12 +2,13 @@
 #
 # Note Pro 12.2 (SM-P900 / v1awifi) - LineageOS 18.1 derleme betigi
 #
-# Bir Linux x86-64 derleme sunucusunda (crave.io veya yeterli guclu bir
-# bilgisayar) calistirilir. MagicPad 2 veya Windows bilgisayarda CALISMAZ.
+# Kendi Linux x86-64 bilgisayarinizda (16+ GB RAM, ~300 GB disk) derleme icindir.
+# crave.io'da KULLANMAYIN: crave kurallari repo sync / mka'yi yasaklar,
+# orada scripts/crave-build.sh kullanilir. MagicPad 2 veya Windows'ta CALISMAZ.
 #
 # Kullanim:
-#   MINIMAL=0 bash build.sh    # Asama 2: degistirilmemis LineageOS 18.1 (varsayilan)
-#   MINIMAL=1 bash build.sh    # Asama 4: sadelestirilmis ROM
+#   MINIMAL=0 bash local-build.sh    # Asama 2: degistirilmemis LineageOS 18.1 (varsayilan)
+#   MINIMAL=1 bash local-build.sh    # Asama 4: sadelestirilmis ROM
 #
 # Ortam degiskenleri:
 #   WORKDIR     Kaynak kodun indirilecegi klasor  (varsayilan: $HOME/android/lineage)
@@ -63,19 +64,7 @@ if [ "$SKIP_SYNC" != "1" ]; then
 fi
 
 # --- 2. Minimal katmani ac/kapat --------------------------------------------
-DEVICE_MK="device/samsung/v1awifi/device.mk"
-HOOK='$(call inherit-product-if-exists, vendor/minimal/config/minimal.mk)'
-[ -f "$DEVICE_MK" ] || die "$DEVICE_MK bulunamadi; repo sync basarisiz olmus olabilir."
-
-# Her calistirmada temiz baslangic: onceki eklemeyi kaldir
-grep -vF "$HOOK" "$DEVICE_MK" > "$DEVICE_MK.tmp" && mv "$DEVICE_MK.tmp" "$DEVICE_MK"
-
-if [ "$MINIMAL" = "1" ]; then
-    log "Minimal katman ACIK"
-    printf '\n# Note Pro Minimal ROM\n%s\n' "$HOOK" >> "$DEVICE_MK"
-else
-    log "Minimal katman KAPALI (degistirilmemis LineageOS 18.1)"
-fi
+MINIMAL="$MINIMAL" bash vendor/minimal/scripts/apply-minimal.sh
 
 # --- 3. Derle ----------------------------------------------------------------
 if command -v ccache >/dev/null; then
@@ -93,19 +82,5 @@ lunch "lineage_v1awifi-${BUILD_TYPE}"
 set -u
 mka bacon -j"$JOBS"
 
-# --- 4. Ciktilari dogrula ------------------------------------------------------
-OUT_DIR="out/target/product/v1awifi"
-ZIP="$(ls -t "$OUT_DIR"/lineage-18.1-*-v1awifi.zip 2>/dev/null | head -n1 || true)"
-[ -n "$ZIP" ] || die "ROM zip dosyasi olusmadi. Hata icin out/error.log dosyasina bakin."
-
-if [ "$MINIMAL" = "1" ]; then
-    FINAL="$OUT_DIR/notepro-minimal-$(date +%Y%m%d)-v1awifi.zip"
-else
-    FINAL="$OUT_DIR/notepro-stock-lineage-$(date +%Y%m%d)-v1awifi.zip"
-fi
-cp "$ZIP" "$FINAL"
-( cd "$OUT_DIR" && sha256sum "$(basename "$FINAL")" > "$(basename "$FINAL").sha256" )
-
-log "TAMAMLANDI"
-echo "ROM:      $WORKDIR/$FINAL"
-echo "SHA-256:  $(cat "$FINAL.sha256")"
+# --- 4. Ciktilari adlandir ve dogrula ------------------------------------------
+MINIMAL="$MINIMAL" bash vendor/minimal/scripts/post-build.sh

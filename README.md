@@ -9,24 +9,40 @@ Samsung Galaxy Note Pro 12.2 (**SM-P900 / v1awifi**) için Google'sız, sadeleş
 
 ```
 manifests/v1awifi.xml           Cihaz kaynaklarının listesi (repo local manifest)
-scripts/build.sh                Tek komutla derleme betiği (Linux x86-64 sunucu)
+scripts/crave-build.sh          crave.io'da derleme (crave kurallarına uygun)
+scripts/local-build.sh          Kendi Linux bilgisayarında derleme
+scripts/apply-minimal.sh        Sadeleştirme katmanını açar/kapatır
+scripts/post-build.sh           ROM'u adlandırır, SHA-256 dosyası üretir
 config/minimal.mk               Sadeleştirme katmanının giriş noktası
 packages/MinimalRemovePackages  ROM'dan çıkarılan uygulamaların listesi
 overlay/                        Google'sız ve hafif varsayılan ayarlar
 ```
 
 Derleme sırasında bu depo kaynak ağacına `vendor/minimal` olarak eklenir.
+`local_manifests` dalı yalnızca manifest dosyasını içerir; crave bunu `.repo/local_manifests` olarak klonlar.
 
-## Derleme
+## Derleme — crave.io (önerilen, ücretsiz)
+
+Crave Devspace içinde, `crave clone create` ile açılmış proje klasöründe:
+
+```bash
+curl -fsSLO https://raw.githubusercontent.com/erdinc1911/notepro-minimal-rom/main/scripts/crave-build.sh
+bash crave-build.sh              # Aşama 2: değiştirilmemiş LineageOS 18.1
+MINIMAL=1 bash crave-build.sh    # Aşama 4: sadeleştirilmiş ROM
+bash crave-build.sh pull         # bitmiş ROM'u indir
+```
+
+Kurallar gereği kaynak indirme ve derleme yalnızca `crave run` içinde yapılır, `--clean` kullanılmaz,
+indirilen dosyalar sonra devspace'ten silinir ([kurallar](https://fosson.top/crave/rules.html)).
+
+**Açık soru:** crave'de Android 11 tabanlı bir proje olup olmadığı. Onaydan sonra `crave clone list` ile bakılacak.
+
+## Derleme — kendi bilgisayarında
 
 Linux x86-64, en az 16 GB (önerilen 32 GB) RAM ve ~300 GB boş disk gerekir.
 
 ```bash
-# Aşama 2: değiştirilmemiş LineageOS 18.1 (önce bunun açıldığı doğrulanır)
-curl -fsSL https://raw.githubusercontent.com/erdinc1911/notepro-minimal-rom/main/scripts/build.sh | MINIMAL=0 bash
-
-# Aşama 4: sadeleştirilmiş ROM
-curl -fsSL https://raw.githubusercontent.com/erdinc1911/notepro-minimal-rom/main/scripts/build.sh | MINIMAL=1 bash
+curl -fsSL https://raw.githubusercontent.com/erdinc1911/notepro-minimal-rom/main/scripts/local-build.sh | MINIMAL=0 bash
 ```
 
 Çıktı: `out/target/product/v1awifi/notepro-*.zip` ve yanında `.sha256` doğrulama dosyası.
